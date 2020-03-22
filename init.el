@@ -63,9 +63,10 @@
   :config
   (load-theme 'sanityinc-tomorrow-night 'no-confirm))
 
-(set-frame-font "Inconsolata 14")
+(set-frame-font "Source Code Pro 13")
 
 (global-auto-revert-mode t)
+
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (set-face-foreground 'vertical-border "#333")
