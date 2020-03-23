@@ -64,7 +64,8 @@
   :config
   (load-theme 'sanityinc-tomorrow-night 'no-confirm))
 
-(set-frame-font "Source Code Pro 14")
+
+(set-frame-font "Source Code Pro 13")
 
 (global-auto-revert-mode t)
 
