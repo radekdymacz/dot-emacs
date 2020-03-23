@@ -362,7 +362,7 @@
 (use-package prettier-js
   :ensure t)
 
-(add-hook 'javascript-mode 'prettier-js-mode)
+(add-hook 'js-mode-hook 'prettier-js-mode)
 
 ;; json-mode: Major mode for editing JSON files with emacs
 ;; https://github.com/joshwnj/json-mode
