@@ -359,10 +359,19 @@
 
 ;;; JS React
 
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         ))
+
+;;; Prettier formating
 (use-package prettier-js
   :ensure t)
 
 (add-hook 'js-mode-hook 'prettier-js-mode)
+(add-hook 'js-mode-hook 'tide-mode)
 
 ;; json-mode: Major mode for editing JSON files with emacs
 ;; https://github.com/joshwnj/json-mode
