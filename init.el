@@ -359,8 +359,10 @@
 
 ;;; JS React
 
+(use-package prettier-js
+  :ensure t)
 
-
+(add-hook 'javascript-mode 'prettier-js-mode)
 
 ;; json-mode: Major mode for editing JSON files with emacs
 ;; https://github.com/joshwnj/json-mode
@@ -445,7 +447,7 @@
   :ensure t
   :config
   (progn
-    (setq-default olivetti-body-width 160)
+    (setq-default olivetti-body-width 120)
     (visual-line-mode)))
 
 
@@ -464,7 +466,7 @@
  '(js2-strict-missing-semi-warning nil)
  '(line-number-mode nil)
  '(package-selected-packages
-   '(lsp-treemacs smartparens ivy-posframe posframe atom-one-dark-theme centaur-tabs go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider))
+   '(rjsx-mode prettier-js lsp-treemacs smartparens ivy-posframe posframe atom-one-dark-theme centaur-tabs go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider))
  '(safe-local-variable-values nil)
  '(send-mail-function 'mailclient-send-it))
 (custom-set-faces
@@ -481,3 +483,4 @@
 ;; End:
 
 ;;; init.el ends here
+(put 'narrow-to-region 'disabled nil)
