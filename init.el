@@ -47,7 +47,8 @@
 (show-paren-mode 1)
 (setq-default frame-title-format '("%f [%m]"))
 (fset 'yes-or-no-p 'y-or-n-p)
-(menu-bar-mode -1)
+(menu-bar-mode t)
+
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
@@ -63,9 +64,10 @@
   :config
   (load-theme 'sanityinc-tomorrow-night 'no-confirm))
 
-(set-frame-font "Inconsolata 14")
+(set-frame-font "Source Code Pro 14")
 
 (global-auto-revert-mode t)
+
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (set-face-foreground 'vertical-border "#333")
@@ -100,6 +102,8 @@
 (global-set-key [M-up] 'windmove-up)              ; move to upper window
 (global-set-key [M-down] 'windmove-down)          ; move to lower window
 
+(setq-default tab-width 2)
+
 
 ;;; Packages
 
@@ -108,6 +112,9 @@
   :ensure t
   :config (setq ivy-use-selectable-prompt t)
   :init (ivy-mode 1))
+
+(use-package smartparens
+  :ensure t)
 
 (use-package counsel
   :ensure t
@@ -154,8 +161,6 @@
   :ensure t
   :defer 2
   :bind (("C-x g" . magit-status)))
-
-
 
 (use-package rainbow-delimiters
   :ensure t
@@ -232,9 +237,28 @@
         ("C-x t M-t" . treemacs-find-tag)))
 
 
+
+;;; Tabs
+
+(use-package centaur-tabs
+  :ensure t
+  :demand
+  :config
+  (progn
+    (centaur-tabs-mode t)
+    (setq centaur-tabs-set-modified-marker t)
+    ;(setq centaur-tabs-modified-marker "*")
+    (centaur-tabs-headline-match))
+  :bind
+  ("C-<right>" . centaur-tabs-backward)
+  ("C-<tab>" . centaur-tabs-forward))
+
 (use-package treemacs-projectile
   :after treemacs projectile
   :ensure t)
+
+;; (use-package lsp-treemacs
+;;   :ensure t)
 
 
 (use-package rich-minority
@@ -284,7 +308,16 @@
   :ensure t)
 
 ;;; super key
-;;(setq mac-option-modifier 'super)
+;; (setq mac-command-modifier 'super)
+
+(use-package lsp-mode
+  :ensure t)
+
+(use-package company-lsp
+  :ensure t)
+
+(push 'company-lsp company-backends)
+
 
 ;;; Clojure
 
@@ -313,9 +346,6 @@
   :ensure t
   :init )
 
-(use-package company-go
-  :ensure t
-  :init )
 
 ;;; JS React
 
@@ -334,6 +364,7 @@
   (setq js-indent-level 2))
 
 (use-package company
+  :ensure t
   :diminish company-mode
   :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
   :commands company-abort
@@ -380,6 +411,22 @@
     :hook (global-company-mode . company-quickhelp-mode)
     :init (setq company-quickhelp-delay 0.5)))
 
+;; (use-package yasnippet
+;;   :custom
+;;   (yas-wrap-around-region t)
+;;   :mode
+;;   ("\\.yasnippet\\'" . snippet-mode)
+;;   :init
+;;   (defun yas-indent-unless-case-sensitive (f &rest args)
+;;     (let ((yas-indent-line (if (member major-mode indent-sensitive-modes) nil 'auto)))
+;;       (apply f args)))
+;;   (delete 'yas-installed-snippets-dir yas-snippet-dirs)
+;;   (advice-add 'yas--indent :around #'yas-indent-unless-case-sensitive)
+;;   (add-to-list 'hippie-expand-try-functions-list #'yas-hippie-try-expand)
+;;   (yas-global-mode))
+
+
+
 
 ;;;  Distraction free editing
 
@@ -407,16 +454,17 @@
  '(js2-strict-missing-semi-warning nil)
  '(line-number-mode nil)
  '(package-selected-packages
-   (quote
-    (go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider)))
+   '(lsp-treemacs smartparens ivy-posframe posframe atom-one-dark-theme centaur-tabs go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider))
  '(safe-local-variable-values nil)
- '(send-mail-function (quote mailclient-send-it)))
+ '(send-mail-function 'mailclient-send-it))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(ivy-posframe ((t (:background "#282a36"))))
+ '(ivy-posframe-border ((t (:background "#6272a4"))))
+ '(ivy-posframe-cursor ((t (:background "#61bfff")))))
  ;; Local Variables:
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
