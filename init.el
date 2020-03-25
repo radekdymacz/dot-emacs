@@ -13,6 +13,27 @@
 
 ;; Package configs
 
+(defvar file-name-handler-alist-original file-name-handler-alist)
+
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6
+      file-name-handler-alist nil
+      site-run-file nil)
+
+(defvar ian/gc-cons-threshold 20000000)
+
+(add-hook 'emacs-startup-hook ; hook run after loading init files
+          (lambda ()
+            (setq gc-cons-threshold ian/gc-cons-threshold
+                  gc-cons-percentage 0.1
+                  file-name-handler-alist file-name-handler-alist-original)))
+
+(add-hook 'minibuffer-setup-hook (lambda ()
+                                   (setq gc-cons-threshold (* ian/gc-cons-threshold 2))))
+(add-hook 'minibuffer-exit-hook (lambda ()
+                                  (garbage-collect)
+                                  (setq gc-cons-threshold ian/gc-cons-threshold)))
+
 
 (require 'package)
 
@@ -59,16 +80,20 @@
 ;;; Theme
 (validate-setq custom-safe-themes t)    ; Treat themes as safe
 
-(use-package color-theme-sanityinc-tomorrow ; Default theme
-  :ensure t
-  :config
-  (load-theme 'sanityinc-tomorrow-night 'no-confirm))
+;; (use-package color-theme-sanityinc-tomorrow ; Default theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'sanityinc-tomorrow-night 'no-confirm))
 
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+
+(load-theme 'vscode-dark-plus t)
 
 (set-frame-font "Source Code Pro 13")
 
-(global-auto-revert-mode t)
 
+(setq-default line-spacing 2)
+(global-auto-revert-mode t)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (set-face-foreground 'vertical-border "#333")
@@ -115,7 +140,10 @@
   :init (ivy-mode 1))
 
 (use-package smartparens
-  :ensure t)
+  :config
+  (smartparens-global-mode t)
+  (setq show-parent-delay 0)
+  (show-paren-mode 1))
 
 (use-package counsel
   :ensure t
@@ -163,9 +191,9 @@
   :defer 2
   :bind (("C-x g" . magit-status)))
 
-(use-package rainbow-delimiters
-  :ensure t
-  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+;; (use-package rainbow-delimiters
+;;   :ensure t
+;;   :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 
 ;;; Markdown mode
@@ -209,7 +237,7 @@
           treemacs-show-hidden-files             t
           treemacs-silent-filewatch              nil
           treemacs-silent-refresh                nil
-          treemacs-sorting                       'alphabetic-desc
+          treemacs-sorting                       'alphabetic-asc
           treemacs-space-between-root-nodes      0
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
@@ -319,6 +347,15 @@
 
 (push 'company-lsp company-backends)
 
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package beacon
+  :ensure t
+  :config (beacon-mode 1)
+  (setq beacon-blink-delay 0.15)
+  (setq beacon-blink-duration 0.15))
 
 ;;; Clojure
 
@@ -341,6 +378,23 @@
   :ensure t
   :config
   (require 'flycheck-clj-kondo))
+;;; Format on save
+
+;; it formats buffer and attempts to return to original position.
+(defun cider-format-buffer-back () (interactive)
+  (let (p)
+    (setq p (point))
+    (cider-format-buffer)
+    (goto-char p))
+  )
+
+(defun add-clj-format-before-save () (interactive)
+       (add-hook 'before-save-hook
+                 'cider-format-buffer-back
+                 t t))
+
+(add-hook 'clojure-mode-hook
+          'add-clj-format-before-save)
 
 ;;; Go
 (use-package go-mode
@@ -370,8 +424,12 @@
 (use-package prettier-js
   :ensure t)
 
+
 (add-hook 'js-mode-hook 'prettier-js-mode)
-(add-hook 'js-mode-hook 'tide-mode)
+(add-hook 'js-mode-hook #'setup-tide-mode)
+
+(setq-default js-indent-level 2)
+(setq company-tooltip-align-annotations t)
 
 ;; json-mode: Major mode for editing JSON files with emacs
 ;; https://github.com/joshwnj/json-mode
@@ -475,7 +533,7 @@
  '(js2-strict-missing-semi-warning nil)
  '(line-number-mode nil)
  '(package-selected-packages
-   '(rjsx-mode prettier-js lsp-treemacs smartparens ivy-posframe posframe atom-one-dark-theme centaur-tabs go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider))
+   '(rainbow-mode ewal-doom-themes beacon rjsx-mode prettier-js lsp-treemacs smartparens ivy-posframe posframe atom-one-dark-theme centaur-tabs go-snippets js2-refactor js-comint eldoc-box company-quickhelp company-box company-prescient yasnippet-snippets dockerfile-mode docker olivetti virtualenvwrapper rich-minority python-pytest tide clj-refactor flycheck-clj-kondo js-react-redux-yasnippets company-tern prettier-js-mode emmet-mode add-node-modules-path web-mode company-terraform terraform-mode flutter dart-mode dap-java dap-mode lsp-java lsp-ui company-lsp lsp-mode github-theme ag neotree gist ob-sagemath elpy counsel spaceline-all-the-icons spaceline doom-themes omnibox elm-yasnippets ac-capf elm-mode org-plus-contrib json-mode yaml-mode clojure-snippets arjen-grey-theme go-guru restclient markdown-mode writeroom-mode multi-term google-this better-defaults ace-jump-mode popwin fill-column-indicator eyebrowse disable-mouse paredit-everywhere which-key go-direx treemacs-projectile treemacs multiple-cursors multiple-cursor go-eldoc company-go smart-mode-line github-modern-theme inf-clojure rainbow-identifiers rainbow-delimiters go-mode ac-dabbrev auto-complete color-theme-sanityinc-tomorrow powerline magit validate use-package shell-pop paredit helm-projectile helm-ag flycheck exec-path-from-shell diminish company cider))
  '(safe-local-variable-values nil)
  '(send-mail-function 'mailclient-send-it))
 (custom-set-faces

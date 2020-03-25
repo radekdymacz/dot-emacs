@@ -1,3 +1,4 @@
 *
 !.gitignore
 !init.el
+!themes/vscode-dark-plus-theme.el
