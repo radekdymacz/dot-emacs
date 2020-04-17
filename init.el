@@ -80,14 +80,14 @@
 ;;; Theme
 (validate-setq custom-safe-themes t)    ; Treat themes as safe
 
-;; (use-package color-theme-sanityinc-tomorrow ; Default theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'sanityinc-tomorrow-night 'no-confirm))
+(use-package color-theme-sanityinc-tomorrow ; Default theme
+  :ensure t
+  :config
+  (load-theme 'sanityinc-tomorrow-night 'no-confirm))
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
-(load-theme 'vscode-dark-plus t)
+(load-theme 'sanityinc-tomorrow-night t)
 
 (set-frame-font "Source Code Pro 13")
 
@@ -408,6 +408,9 @@
 (defun lsp-go-install-save-hooks ()
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+;;; go-tests
+sh)
 
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
